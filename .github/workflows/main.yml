@@ -1,0 +1,54 @@
+name: Build and Deploy to S3
+
+on:
+  push:
+    branches:
+      - master  # Trigger on push to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # Set the Node.js version, adjust as needed
+
+    # Install dependencies and build backend
+    - name: Install Backend dependencies
+      run: |
+        cd backend
+        npm install
+
+    - name: Build Backend
+      run: |
+        cd backend
+        npm run build  # Adjust if your build script is different
+
+    # Install dependencies and build frontend
+    - name: Install Frontend dependencies
+      run: |
+        cd frontend
+        npm install
+
+    - name: Build Frontend
+      run: |
+        cd frontend
+        npm run build
+
+    # Deploy to S3
+    - name: Deploy to S3
+      uses: jakejarvis/s3-sync-action@0.5.0
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: ${{ secrets.AWS_REGION }}
+        s3_bucket: 'cloudtera123'  # Your S3 bucket name
+        local_dir: './frontend/build'  # Adjust to point to your frontend build directory
+        delete: true  # Optional: Delete files in S3 that are no longer in the local directory
