@@ -3,7 +3,7 @@ name: Build and Deploy to S3
 on:
   push:
     branches:
-      - master # Trigger on push to the main branch
+      - main  # Trigger on push to the main branch
 
 jobs:
   build:
@@ -23,13 +23,21 @@ jobs:
     # Install dependencies and build backend
     - name: Install Backend dependencies
       run: |
-        cd backend
-        npm install
+        if [ -d "backend" ]; then
+          cd backend
+          npm install
+        else
+          echo "Backend directory not found!"
+        fi
 
     - name: Build Backend
       run: |
-        cd backend
-        npm run build  # Adjust if your build script is different
+        if [ -d "backend" ]; then
+          cd backend
+          npm run build  # Adjust if your build script is different
+        else
+          echo "Backend directory not found!"
+        fi
 
     # Install dependencies and build frontend
     - name: Install Frontend dependencies
