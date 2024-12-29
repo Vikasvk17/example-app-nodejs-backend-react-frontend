@@ -3,7 +3,7 @@ name: Build and Deploy to S3
 on:
   push:
     branches:
-      - master  # Trigger on push to the main branch
+      - master # Trigger on push to the main branch
 
 jobs:
   build:
@@ -42,13 +42,14 @@ jobs:
         cd frontend
         npm run build
 
-    # Deploy to S3
-    - name: Deploy to S3
-      uses: jakejarvis/s3-sync-action@0.5.0
+    # Configure AWS credentials using OIDC (IAM Role)
+    - name: Configure AWS Credentials using OIDC
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        s3_bucket: 'cloudtera123'  # Your S3 bucket name
-        local_dir: './frontend/build'  # Adjust to point to your frontend build directory
-        delete: true  # Optional: Delete files in S3 that are no longer in the local directory
+        role-to-assume: arn:aws:iam::851725217291:role/front1  # The ARN of the role to assume
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    # Deploy to S3 using AWS CLI
+    - name: Deploy to S3 using AWS CLI
+      run: |
+        aws s3 sync ./frontend/build/ s3://cloudtera123/ --delete
