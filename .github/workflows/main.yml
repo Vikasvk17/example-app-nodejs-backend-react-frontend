@@ -23,7 +23,7 @@ jobs:
     # Install dependencies and build backend
     - name: Install Backend dependencies
       run: |
-        cd backend
+        cd example-app-nodejs-backend-react-frontend
         npm install
 
     - name: Build Backend
