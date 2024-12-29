@@ -23,31 +23,23 @@ jobs:
     # Install dependencies and build backend
     - name: Install Backend dependencies
       run: |
-        if [ -d "backend" ]; then
-          cd backend
-          npm install
-        else
-          echo "Backend directory not found!"
-        fi
+        cd backend
+        npm install
 
     - name: Build Backend
       run: |
-        if [ -d "backend" ]; then
-          cd backend
-          npm run build  # Adjust if your build script is different
-        else
-          echo "Backend directory not found!"
-        fi
+        cd backend
+        npm run build  # Adjust if your build script is different
 
     # Install dependencies and build frontend
     - name: Install Frontend dependencies
       run: |
-        cd frontend
+        cd 
         npm install
 
     - name: Build Frontend
       run: |
-        cd frontend
+        cd example-app-nodejs-backend-react-frontend
         npm run build
 
     # Configure AWS credentials using OIDC (IAM Role)
